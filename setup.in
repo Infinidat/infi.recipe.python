@@ -33,7 +33,7 @@ SETUP_INFO = dict(
 
     entry_points = {
         'zc.buildout' : ['download = ${project:name}.download:Recipe',
-                         'upload = ${project:name}.upload:Recipe',
+                         'pack = ${project:name}.pack:Recipe',
                          'default = ${project:name}.download:Recipe']
     }
 )
