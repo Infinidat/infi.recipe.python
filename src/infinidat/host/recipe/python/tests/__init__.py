@@ -12,9 +12,16 @@ class RecipeTestCase(unittest2.TestCase):
         if not exists('dist'):
             mkdir('dist')
             
-    def test_download(self):
-        args = '-c buildout-tests.cfg install test_download'
+    @patch('infinidat.host.recipe.python.download._get_url')       
+    def test_download_1(self, get_url):
+        get_url.return_value = 'http://ci/job/python/label=linux-redhat-6-x86/lastBuild/artifact/python-2.7.1-1-g824ee1a-linux-linux-redhat-6-x86.tar.gz'
+        args = '-c buildout-tests.cfg install test_download_1'
         buildout.main(args.split())
+        self._verify_downloaded_python()
+        
+    def _verify_downloaded_python(self):
+        from os.path import exists, sep
+        self.assertTrue(sep.join(['parts','bin','python']))
         
     @patch('infinidat.host.recipe.python.pack._get_version')
     def test_pack_1(self, _get_version):

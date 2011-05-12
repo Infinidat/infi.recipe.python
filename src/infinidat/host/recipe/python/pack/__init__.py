@@ -2,7 +2,6 @@ __import__("pkg_resources").declare_namespace(__name__)
 
 from zc.buildout import UserError
 
-
 def _get_git_version():
     from infinidat.host.recipe.version.git import GitFlow
     return GitFlow().head._describe_match("v*").strip('v')
