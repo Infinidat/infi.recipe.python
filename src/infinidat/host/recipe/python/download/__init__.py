@@ -30,7 +30,7 @@ class Recipe(object):
         if not self.version:
             from zc.buildout import UserError
             raise UserError("version option is missing")
-        self.url = _get_url()
+        self.url = _get_url(self.version)
         
     def install(self):
         self._download()
