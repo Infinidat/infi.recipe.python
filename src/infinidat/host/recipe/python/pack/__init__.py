@@ -5,13 +5,18 @@ from zc.buildout import UserError
 
 def _get_git_version():
     from infinidat.host.recipe.version.git import GitFlow
-    return GitFlow().head.version_tag.strip('v')
+    return GitFlow().head._describe_match("v*").strip('v')
 
 def _get_os_version():
     import platform
     system = platform.system().lower().replace('-', '').replace('_', '')
     if system == 'linux':
-        dist = 'linux-%s-%s' % (platform.dist()[0], platform.dist()[1])
+        dist_name = platform.dist()[0].lower()
+        if dist_name == 'ubuntu':
+            dist_version  = platform.dist()[1].lower()
+        else:
+            dist_version  = platform.dist()[1].lower().split('.')[0]
+        dist = 'linux-%s-%s' % (dist_name, dist_version)
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
         return "%s-%s-%s" % (system, dist , arch)
     if system == 'windows':
