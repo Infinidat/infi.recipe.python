@@ -2,16 +2,34 @@ __import__("pkg_resources").declare_namespace(__name__)
 
 from zc.buildout import UserError
 
-def _get_version():
+
+def _get_git_version():
     from infinidat.host.recipe.version.git import GitFlow
     return GitFlow().head.version_tag.strip('v')
-   
+
+def _get_os_version():
+    import platform
+    system = platform.system().lower().replace('-', '').replace('_', '')
+    if system == 'linux':
+        dist = 'linux-%s-%s' % (platform.dist()[0], platform.dist()[1])
+        arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
+        return "%s-%s-%s" % (system, dist , arch)
+    if system == 'windows':
+        arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
+        return "%s-%s" % (system, arch)
+    if system == 'darwin':
+        arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
+        return "macosx-%s" % arch
+    return ''
+
+def _get_version():
+    return "%s-%s" % (_get_git_version(), _get_os_version())
+
 class Recipe(object):
     def __init__(self, buildout, name, options):
         self._buildout = buildout
         self._options = options
         self._section_name = name
-     
 
     def _test_source_directory(self):
         from os.path import isdir, exists
@@ -37,15 +55,15 @@ class Recipe(object):
         self._curdir = abspath(curdir)
         self._buildout_path = self._buildout.get('buildout').get('directory')
         chdir(self._buildout_path)
-    
+
     def _popd(self):
         from os import chdir
         chdir(self._curdir)
-             
+
     def install(self):
         self._pushd()
         self.source = 'dist'
-        self.destination_file = 'python-%s.tar.gz' % _get_version() 
+        self.destination_file = 'python-%s.tar.gz' % _get_version()
         self._test_source_directory()
         self._test_distination_file()
         self._write_archive()
@@ -56,7 +74,8 @@ class Recipe(object):
     def _write_archive(self):
         import tarfile
         archive = tarfile.open(name = self.destination_file, mode = 'w:gz')
-        archive.add(self.source)
-        
+        archive.add(self.source, arcname = 'python')
+
     def update(self):
         pass
+
