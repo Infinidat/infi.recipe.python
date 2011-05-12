@@ -16,15 +16,14 @@ def _get_os_version():
             dist_version  = platform.dist()[1].lower()
         else:
             dist_version  = platform.dist()[1].lower().split('.')[0]
-        dist = 'linux-%s-%s' % (dist_name, dist_version)
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
-        return "%s-%s-%s" % (system, dist , arch)
+        return "-".join([system, dist_name, dist_version , arch])
     if system == 'windows':
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
-        return "%s-%s" % (system, arch)
+        return "-".join([system, arch])
     if system == 'darwin':
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
-        return "macosx-%s" % arch
+        return "-".join(["macosx", arch])
     return ''
 
 def _get_version():
