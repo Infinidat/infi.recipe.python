@@ -8,7 +8,7 @@ def _get_url(version):
     from ..pack import _get_os_version
     filename = "python-%s-%s.tar.gz" % (version, _get_os_version())
     url = "/".join([SERVER_JOB_BASE_URL, JOB_NAME, "label=%s" % _get_os_version(), 
-                    "lastbuild/artifact", self.filename])
+                    "lastbuild/artifact", filename])
     return url
 
 class Recipe(object):
