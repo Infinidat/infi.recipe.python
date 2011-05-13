@@ -1,14 +1,13 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
 
-SERVER_JOB_BASE_URL = "http://ci/job"
+SERVER_JOB_BASE_URL = "ftp://ci/workspace"
 JOB_NAME = "python"
 
 def _get_url(version):
     from ..pack import _get_os_version
     filename = "python-%s-%s.tar.gz" % (version, _get_os_version())
-    url = "/".join([SERVER_JOB_BASE_URL, JOB_NAME, "label=%s" % _get_os_version(), 
-                    "lastBuild/artifact", filename])
+    url = "/".join([SERVER_JOB_BASE_URL, JOB_NAME, filename])
     return url
 
 class Recipe(object):
