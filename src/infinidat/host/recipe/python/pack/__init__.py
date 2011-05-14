@@ -1,7 +1,5 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
-from zc.buildout import UserError
-
 def _get_git_version():
     from infinidat.host.recipe.version.git import GitFlow
     return GitFlow().head._describe_match("v*").strip('v')
@@ -12,9 +10,9 @@ def _get_os_version():
     if system == 'linux':
         dist_name = platform.dist()[0].lower()
         if dist_name == 'ubuntu':
-            dist_version  = platform.dist()[1].lower()
+            dist_version = platform.dist()[1].lower()
         else:
-            dist_version  = platform.dist()[1].lower().split('.')[0]
+            dist_version = platform.dist()[1].lower().split('.')[0]
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
         return "-".join([system, dist_name, dist_version , arch])
     if system == 'windows':
@@ -29,12 +27,20 @@ def _get_version():
     return "%s-%s" % (_get_git_version(), _get_os_version())
 
 class Recipe(object):
+    """ This recipe packs the 'dist' directory to python-<version>-<arch>.tar.gz
+    it honor the following options:
+    include_list: list of paths to add to the archive
+    exclide_list: list of paths that match the include list but should be excluded
+    
+    note that each path should start with dist
+    """
     def __init__(self, buildout, name, options):
         self._buildout = buildout
         self._options = options
         self._section_name = name
 
     def _test_source_directory(self):
+        from zc.buildout import UserError
         from os.path import isdir, exists
         from os import access, R_OK
         if not self.source:
@@ -45,10 +51,11 @@ class Recipe(object):
             raise UserError("%s is not a directory" % self.source)
 
     def _test_distination_file(self):
+        from zc.buildout import UserError
         from os.path import isfile, exists
         from os import access, W_OK
         if not self.destination_file:
-            raise UserError("missing source_directory")
+            raise UserError("missing destination_file")
         if not access(self.source, W_OK):
             raise UserError("cannot write %s" % self.destination_file)
 
@@ -69,6 +76,7 @@ class Recipe(object):
         self.destination_file = 'python-%s.tar.gz' % _get_version()
         self._test_source_directory()
         self._test_distination_file()
+        self._build_include_list()
         self._write_archive()
         self._popd()
         self._options.created(self.destination_file)
@@ -76,9 +84,26 @@ class Recipe(object):
 
     def _write_archive(self):
         import tarfile
-        archive = tarfile.open(name = self.destination_file, mode = 'w:gz')
-        archive.add(self.source, arcname = 'python')
+        archive = tarfile.open(name=self.destination_file, mode='w:gz')
+        archive.add(name=self.source, arcname='python', exclude=self._tarfile_exclude)
+
+    def _build_include_list(self):
+        self._include_list = [path.strip() for path in self._options.get("include_list", '').splitlines()]
+        self._include_list.remove('')
+        self._exclude_list = [path.strip() for path in self._options.get("exclude_list", '').splitlines()]
+        self._exclude_list.remove('')
+
+    def _tarfile_exclude(self, path):
+        if path in self._exclude_list:
+            return True
+        if path in self._include_list:
+            return False
+        for basepath in self._include_list:
+            if path in basepath:
+                return False
+            if basepath in path:
+                return False
+        return True
 
     def update(self):
         pass
-
