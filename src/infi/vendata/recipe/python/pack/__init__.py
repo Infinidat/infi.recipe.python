@@ -1,7 +1,7 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
 def _get_git_version():
-    from infinidat.host.recipe.version.git import GitFlow
+    from infi.recipe.template.version.git import GitFlow
     return GitFlow().head._describe_match("v*").strip('v')
 
 def _get_os_version():
