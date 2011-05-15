@@ -62,4 +62,4 @@ class Recipe(object):
             self.options.created(path)
             
     def update(self):
-        raise NotImplementedError
+        pass
