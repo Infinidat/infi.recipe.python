@@ -12,7 +12,7 @@ class RecipeTestCase(unittest2.TestCase):
         if not exists('dist'):
             mkdir('dist')
 
-    @patch('infi.vendata.recipe.python.download._get_url')
+    @patch('infi.recipe.python.download._get_url')
     def test_download_1(self, get_url):
         get_url.return_value = 'ftp://ci/workspace/python/python-2.7.1-11-g0a2b8f9-linux-redhat-6-x64.tar.gz'
         args = '-c buildout-tests.cfg install test_download_1'
@@ -23,7 +23,7 @@ class RecipeTestCase(unittest2.TestCase):
         from os.path import exists, sep
         self.assertTrue(sep.join(['parts','bin','python']))
 
-    @patch('infi.vendata.recipe.python.pack._get_version')
+    @patch('infi.recipe.python.pack._get_version')
     def test_pack_1(self, _get_version):
         _get_version.return_value = 12345
         args = '-c buildout-tests.cfg install test_pack_1'
