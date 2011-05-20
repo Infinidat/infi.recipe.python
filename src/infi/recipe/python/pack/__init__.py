@@ -1,8 +1,8 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
 def _get_git_version():
-    from infi.recipe.template.version.git import GitFlow
-    return GitFlow().head._describe_match("v*").strip('v')
+    from infi.recipe.template.version.recipe import Recipe
+    return Recipe.extract_version_tag()
 
 def _get_os_version():
     import platform
