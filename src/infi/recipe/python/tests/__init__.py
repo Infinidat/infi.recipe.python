@@ -6,7 +6,7 @@ from mock import patch
 
 class RecipeTestCase(unittest2.TestCase):
 
-    def setUpAll(self):
+    def setUp(self):
         from os import mkdir
         from os.path import exists
         if not exists('dist'):
@@ -29,7 +29,7 @@ class RecipeTestCase(unittest2.TestCase):
     def _verify_tarfile(self, name):
         import tarfile
         from os.path import exists
-        self.assertTrue(exists(name))
+        self.assertTrue(exists(name), 'not found: %s' % name)
 
     def test_dry_run(self):
         args = '-c buildout-tests.cfg'
