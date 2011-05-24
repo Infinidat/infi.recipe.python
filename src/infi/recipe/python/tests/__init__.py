@@ -12,13 +12,6 @@ class RecipeTestCase(unittest2.TestCase):
         if not exists('dist'):
             mkdir('dist')
 
-    @patch('infi.recipe.python.download._get_url')
-    def test_download_1(self, get_url):
-        get_url.return_value = 'ftp://ci/workspace/python/python-2.7.1-11-g0a2b8f9-linux-redhat-6-x64.tar.gz'
-        args = '-c buildout-tests.cfg install test_download_1'
-        buildout.main(args.split())
-        self._verify_downloaded_python()
-
     def _verify_downloaded_python(self):
         from os.path import exists, sep
         self.assertTrue(sep.join(['parts','bin','python']))
