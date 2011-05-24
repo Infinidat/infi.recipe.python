@@ -89,9 +89,11 @@ class Recipe(object):
 
     def _build_include_list(self):
         self._include_list = [path.strip() for path in self._options.get("include_list", '').splitlines()]
-        self._include_list.remove('')
+        if '' in self._include_list:
+            self._include_list.remove('')
         self._exclude_list = [path.strip() for path in self._options.get("exclude_list", '').splitlines()]
-        self._exclude_list.remove('')
+        if '' in self._exclude_list:
+            self._exclude_list.remove('')
 
     def _tarfile_exclude(self, path):
         if path in self._exclude_list:
