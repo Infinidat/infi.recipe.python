@@ -20,7 +20,10 @@ class RecipeTestCase(unittest2.TestCase):
     def test_pack_1(self, _get_version):
         _get_version.return_value = 12345
         args = '-c buildout-tests.cfg install test_pack_1'
-        buildout.main(args.split())
+        try:
+            buildout.main(args.split())
+        except SystemExit:
+            pass
         self._verify_tarfile('python-12345.tar.gz')
 
     def _verify_tarfile(self, name):
