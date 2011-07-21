@@ -19,8 +19,9 @@ def _get_os_version():
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
         return "-".join([system, arch])
     if system == 'darwin':
-        arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
-        return "-".join(["macosx", arch])
+        dist_version, _, arch = platform.mac_ver()
+        arch = 'x64' if arch == 'x86_64' else 'x86'
+        return "-".join(["osx", dist_version, arch])
     return ''
 
 def _get_version():
