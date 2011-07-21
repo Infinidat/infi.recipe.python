@@ -20,6 +20,7 @@ def _get_os_version():
         return "-".join([system, arch])
     if system == 'darwin':
         dist_version, _, arch = platform.mac_ver()
+        dist_version = '.'.join(dist_version.split('.')[:2])
         arch = 'x64' if arch == 'x86_64' else 'x86'
         return "-".join(["osx", dist_version, arch])
     return ''
