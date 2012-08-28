@@ -1,5 +1,7 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
+DOWNLOAD_BASE  = 'ftp://ci.infinidat.com/workspace/python'
+
 class Recipe(object):
     def __init__(self, buildout, name, options):
         self.buildout = buildout
@@ -19,7 +21,7 @@ class Recipe(object):
         self.version = self.options.get('version', None)
         if not self.version:
             raise UserError("version option is missing")
-        self.download_base = self.options.get('download-base', None)
+        self.download_base = self.options.get('download-base', DOWNLOAD_BASE)
         if not self.download_base:
             raise UserError("download-base option is missing")
         from ..pack import _get_os_version
