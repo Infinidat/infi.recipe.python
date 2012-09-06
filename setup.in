@@ -32,7 +32,7 @@ SETUP_INFO = dict(
         'zc.buildout' : ['download = ${project:name}.download:Recipe',
                          'pack = ${project:name}.pack:Recipe',
                          'default = ${project:name}.download:Recipe']
-    }
+    })
 
 def setup():
     from setuptools import setup as _setup
