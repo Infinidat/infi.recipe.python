@@ -1,6 +1,6 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
-DOWNLOAD_BASE  = 'ftp://repo.infinidat.com/archives'
+DOWNLOAD_BASE  = 'ftp://python.infinidat.com/archives'
 
 class Recipe(object):
     def __init__(self, buildout, name, options):
