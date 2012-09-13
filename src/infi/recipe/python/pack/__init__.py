@@ -10,7 +10,7 @@ def _get_os_version():
     if system == 'linux':
         dist_name = platform.dist()[0].lower()
         if dist_name == 'ubuntu':
-            dist_version = platform.dist()[1].lower()
+            dist_version = platform.dist()[2].lower()
         else:
             dist_version = platform.dist()[1].lower().split('.')[0]
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
