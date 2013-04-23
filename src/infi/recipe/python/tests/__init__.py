@@ -1,10 +1,10 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
-import unittest2
+import unittest
 from zc.buildout import buildout
 from mock import patch
 
-class RecipeTestCase(unittest2.TestCase):
+class RecipeTestCase(unittest.TestCase):
 
     def setUp(self):
         from os import mkdir
