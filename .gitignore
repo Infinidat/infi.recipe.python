@@ -18,6 +18,7 @@
 bin/
 build/
 dist/
+setup.py
 
 # buildout
 .installed*.cfg
