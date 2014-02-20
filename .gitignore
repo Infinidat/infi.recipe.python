@@ -28,6 +28,7 @@ develop-eggs/
 parts/
 build/
 dist/
+bootstrap.py
 
 # scm
 .bzr/
