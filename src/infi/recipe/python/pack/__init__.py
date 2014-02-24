@@ -20,10 +20,11 @@ def _get_os_version():
         dist_name = platform.dist()[0].lower()
         if dist_name == 'ubuntu':
             dist_version = platform.dist()[2].lower()
-        if dist_name == 'centos':
+        elif dist_name == 'centos':
             # RedHat hosts have /etc/centos-release file, but with RedHat... written inside
             # python-2.7 thinks its centos just because this file exists
             dist_name = _get_centos_dist_name()
+            dist_version = platform.dist()[1].lower().split('.')[0]
         else:
             dist_version = platform.dist()[1].lower().split('.')[0]
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
