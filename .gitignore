@@ -35,3 +35,4 @@ bootstrap.py
 .svn/
 .hg/
 
+src/infi/recipe/python/__version__.py

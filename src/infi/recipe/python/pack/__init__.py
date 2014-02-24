@@ -4,6 +4,15 @@ def _get_git_version():
     from infi.recipe.template.version.recipe import Recipe
     return Recipe.extract_version_tag()
 
+def _get_centos_dist_name():
+    from os import path
+    CENTOS_FILE = path.join(path.sep, "etc", "centos-release")
+    with open(CENTOS_FILE) as fd:
+        content = fd.read()
+    if content.startswith("Red"):
+        return "redhat"
+    return content.split()[0].lower()
+
 def _get_os_version():
     import platform
     system = platform.system().lower().replace('-', '').replace('_', '')
@@ -11,6 +20,10 @@ def _get_os_version():
         dist_name = platform.dist()[0].lower()
         if dist_name == 'ubuntu':
             dist_version = platform.dist()[2].lower()
+        if dist_name == 'centos':
+            # RedHat hosts have /etc/centos-release file, but with RedHat... written inside
+            # python-2.7 thinks its centos just because this file exists
+            dist_name = _get_centos_dist_name()
         else:
             dist_version = platform.dist()[1].lower().split('.')[0]
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
@@ -33,7 +46,7 @@ class Recipe(object):
     it honor the following options:
     include_list: list of paths to add to the archive
     exclide_list: list of paths that match the include list but should be excluded
-    
+
     note that each path should start with dist
     """
     def __init__(self, buildout, name, options):
