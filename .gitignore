@@ -36,3 +36,4 @@ bootstrap.py
 .hg/
 
 src/infi/recipe/python/__version__.py
+eggs
