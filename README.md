@@ -17,7 +17,7 @@ Here's an example for a buildout.cfg file that uses this recipe:
     recipe = infi.recipe.python:download
     executable = parts/python/bin/python
     download-base = ftp://ci.infinidat.com/workspace/python
-    version = v2.7.2.5
+    version = v2.7.6.15
 
     [scripts]
     dependent-scripts = true
