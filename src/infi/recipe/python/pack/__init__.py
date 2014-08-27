@@ -4,19 +4,29 @@ def _get_git_version():
     from infi.recipe.template.version.recipe import Recipe
     return Recipe.extract_version_tag()
 
+def _get_centos_dist_name():
+    from os import path
+    CENTOS_FILE = path.join(path.sep, "etc", "centos-release")
+    with open(CENTOS_FILE) as fd:
+        content = fd.read()
+    if content.startswith("Red"):
+        return "redhat"
+    return content.split()[0].lower()
+
 def _get_os_version():
     import platform
     system = platform.system().lower().replace('-', '').replace('_', '')
     if system == 'linux':
-        dist_long, version, version_id = platform.linux_distribution()
-        # We remove the linux string for centos (so it won't be centoslinux)
-        dist_name = ''.join(dist_long.split(' ')[:2]).replace('linux','').lower()
+        dist_name = platform.dist()[0].lower()
         if dist_name == 'ubuntu':
-            dist_version = version_id
-        elif dist_name == 'centos' or dist_name == 'redhat':
-            dist_version = version.split('.')[0]
+            dist_version = platform.dist()[2].lower()
+        elif dist_name == 'centos':
+            # RedHat hosts have /etc/centos-release file, but with RedHat... written inside
+            # python-2.7 thinks its centos just because this file exists
+            dist_name = _get_centos_dist_name()
+            dist_version = platform.dist()[1].lower().split('.')[0]
         else:
-            dist_version = version.split('.')[0]
+            dist_version = platform.dist()[1].lower().split('.')[0]
         arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
         return "-".join([system, dist_name, dist_version , arch])
     if system == 'windows':
