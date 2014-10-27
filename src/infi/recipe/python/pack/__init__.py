@@ -27,6 +27,10 @@ def _get_os_version():
         dist_version = '.'.join(dist_version.split('.')[:2])
         arch = 'x64' if arch == 'x86_64' else 'x86'
         return "-".join(["osx", dist_version, arch])
+    if system == 'sunos':
+        arch = 'sparc' if platform.processor() == 'sparc' else \
+               ('x86' if '32bit' in platform.architecture()[0] else 'x64')
+        return "-".join(['solaris', platform.release(), arch])
     return ''
 
 def _get_version():
