@@ -1,40 +1,9 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
-def _get_git_version():
-    from infi.recipe.template.version.recipe import Recipe
-    return Recipe.extract_version_tag()
-
-def _get_os_version():
-    import platform
-    system = platform.system().lower().replace('-', '').replace('_', '')
-    if system == 'linux':
-        dist_long, version, version_id = platform.linux_distribution()
-        # We remove the linux string for centos (so it won't be centoslinux)
-        dist_name = ''.join(dist_long.split(' ')[:2]).lower().replace('linux','')
-        if dist_name == 'ubuntu':
-            dist_version = version_id
-        elif dist_name == 'centos' or dist_name == 'redhat':
-            dist_version = version.split('.')[0]
-        else:
-            dist_version = version.split('.')[0]
-        arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
-        return "-".join([system, dist_name, dist_version , arch])
-    if system == 'windows':
-        arch = 'x86' if '32bit' in platform.architecture()[0] else 'x64'
-        return "-".join([system, arch])
-    if system == 'darwin':
-        dist_version, _, arch = platform.mac_ver()
-        dist_version = '.'.join(dist_version.split('.')[:2])
-        arch = 'x64' if arch == 'x86_64' else 'x86'
-        return "-".join(["osx", dist_version, arch])
-    if system == 'sunos':
-        arch = 'sparc' if platform.processor() == 'sparc' else \
-               ('x86' if '32bit' in platform.architecture()[0] else 'x64')
-        return "-".join(['solaris', platform.release(), arch])
-    return ''
+from infi.os_info import get_platform_string, get_version_from_git
 
 def _get_version():
-    return "%s-%s" % (_get_git_version(), _get_os_version())
+    return "%s-%s" % (get_version_from_git(), get_platform_string())
 
 class Recipe(object):
     """ This recipe packs the 'dist' directory to python-<version>-<arch>.tar.gz
