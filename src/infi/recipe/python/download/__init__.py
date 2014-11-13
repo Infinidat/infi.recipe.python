@@ -18,14 +18,14 @@ class Recipe(object):
 
     def _set_url(self):
         from zc.buildout import UserError
+        from infi.os_info import get_platform_string
         self.version = self.options.get('version', None)
         if not self.version:
             raise UserError("version option is missing")
         self.download_base = self.options.get('download-base', DOWNLOAD_BASE)
         if not self.download_base:
             raise UserError("download-base option is missing")
-        from ..pack import _get_os_version
-        filename = "python-%s-%s.tar.gz" % (self.version, _get_os_version())
+        filename = "python-%s-%s.tar.gz" % (self.version, get_platform_string())
         self.url = "/".join([self.download_base, filename])
 
     def install(self):
