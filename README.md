@@ -14,21 +14,19 @@ Here's an example for a buildout.cfg file that uses this recipe:
     python = python
 
     [python]
-    recipe = infi.recipe.python:download
-    executable = parts/python/bin/python
-    download-base = ftp://ci.infinidat.com/workspace/python
-    version = v2.7.6.15
+    recipe = infi.recipe.python
+    version = v2.7.8.2
 
     [scripts]
     dependent-scripts = true
-    recipe = infi.vendata.console_scripts
+    recipe = infi.recipe.console_scripts
     eggs = ipython
     interpreter = python
 
 Checking out the code
 =====================
 
-Run the following:
+To run this code from the repository for development purposes, run the following:
 
     easy_install -U infi.projector
     projector devenv build
