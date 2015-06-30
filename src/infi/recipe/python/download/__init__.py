@@ -14,7 +14,7 @@ class Recipe(object):
         from os.path import sep
         self.buildout_directory = self.buildout.get('buildout').get('directory')
         DEFAULT_EXTRACT_PATH = sep.join([self.buildout_directory, 'parts'])
-        self.extact_path = self.options.get('extract_path', DEFAULT_EXTRACT_PATH)
+        self.extract_path = self.options.get('extract_path', DEFAULT_EXTRACT_PATH)
 
     def _set_url(self):
         from zc.buildout import UserError
@@ -31,6 +31,7 @@ class Recipe(object):
     def install(self):
         self._download()
         self._extract()
+        self._delete_site_packages_direcotry()
         self._notify_on_files_extracted()
         return self.options.created()
 
@@ -42,8 +43,16 @@ class Recipe(object):
     def _extract(self):
         import tarfile
         archive = tarfile.open(self.download_path, 'r:gz')
-        archive.extractall(self.extact_path)
+        archive.extractall(self.extract_path)
         archive.close()
+
+    def _delete_site_packages_direcotry(self):
+        # HOSTDEV-2158
+        from shutil import rmtree
+        from glob import glob
+        from os import path
+        for site_packages_dir in glob(path.join(self.extract_path, 'python', 'lib*', 'python*', 'site-packages')):
+            rmtree(site_packages_dir)
 
     def _get_filenames_from_archive(self):
         import tarfile
@@ -55,7 +64,7 @@ class Recipe(object):
     def _notify_on_files_extracted(self):
         from os.path import sep
         files = self._get_filenames_from_archive()
-        for path in [sep.join([self.extact_path, file]) for file in files]:
+        for path in [sep.join([self.extract_path, file]) for file in files]:
             self.options.created(path)
 
     def update(self):
