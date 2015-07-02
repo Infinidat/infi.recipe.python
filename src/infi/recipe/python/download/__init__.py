@@ -50,9 +50,10 @@ class Recipe(object):
         # HOSTDEV-2158
         from shutil import rmtree
         from glob import glob
-        from os import path
+        from os import path, mkdir
         for site_packages_dir in glob(path.join(self.extract_path, 'python', 'lib*', 'python*', 'site-packages')):
             rmtree(site_packages_dir)
+            mkdir(site_packages_dir)
 
     def _get_filenames_from_archive(self):
         import tarfile
