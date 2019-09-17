@@ -1,15 +1,22 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
+import sys
+
 from infi.os_info import get_platform_string, get_version_from_git
+
+
+PY2 = sys.version_info[0] == 2
+
 
 def _get_version():
     return "%s-%s" % (get_version_from_git(), get_platform_string())
+
 
 class Recipe(object):
     """ This recipe packs the 'dist' directory to python-<version>-<arch>.tar.gz
     it honor the following options:
     include_list: list of paths to add to the archive
-    exclide_list: list of paths that match the include list but should be excluded
+    exclude_list: list of paths that match the include list but should be excluded
 
     note that each path should start with dist
     """
@@ -64,7 +71,11 @@ class Recipe(object):
     def _write_archive(self):
         import tarfile
         archive = tarfile.open(name=self.destination_file, mode='w:gz')
-        archive.add(name=self.source, arcname='python', exclude=self._tarfile_exclude)
+        if PY2:
+            kwargs = dict(exclude=self._tarfile_exclude)
+        else:
+            kwargs = dict(filter=self._tarfile_filter)
+        archive.add(name=self.source, arcname='python', **kwargs)
 
     def _build_include_list(self):
         self._include_list = [path.strip() for path in self._options.get("include_list", '').splitlines()]
@@ -85,6 +96,12 @@ class Recipe(object):
             if basepath in path:
                 return False
         return True
+
+    def _tarfile_filter(self, tarinfo):
+        if self._tarfile_exclude(tarinfo.path):
+            return tarinfo
+        else:
+            return None
 
     def update(self):
         pass
