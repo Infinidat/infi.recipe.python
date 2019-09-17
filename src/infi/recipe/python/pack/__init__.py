@@ -9,7 +9,7 @@ class Recipe(object):
     """ This recipe packs the 'dist' directory to python-<version>-<arch>.tar.gz
     it honor the following options:
     include_list: list of paths to add to the archive
-    exclide_list: list of paths that match the include list but should be excluded
+    exclude_list: list of paths that match the include list but should be excluded
 
     note that each path should start with dist
     """
