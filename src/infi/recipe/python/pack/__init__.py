@@ -64,7 +64,7 @@ class Recipe(object):
     def _write_archive(self):
         import tarfile
         archive = tarfile.open(name=self.destination_file, mode='w:gz')
-        archive.add(name=self.source, arcname='python', exclude=self._tarfile_exclude)
+        archive.add(name=self.source, arcname='python', filter=self._tarfile_filter)
 
     def _build_include_list(self):
         self._include_list = [path.strip() for path in self._options.get("include_list", '').splitlines()]
@@ -74,17 +74,18 @@ class Recipe(object):
         if '' in self._exclude_list:
             self._exclude_list.remove('')
 
-    def _tarfile_exclude(self, path):
+    def _tarfile_filter(self, tarinfo):
+        path = tarinfo.path
         if path in self._exclude_list:
-            return True
+            return None
         if path in self._include_list:
-            return False
+            return tarinfo
         for basepath in self._include_list:
             if path in basepath:
-                return False
+                return tarinfo
             if basepath in path:
-                return False
-        return True
+                return tarinfo
+        return None
 
     def update(self):
         pass
