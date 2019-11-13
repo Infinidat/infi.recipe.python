@@ -75,7 +75,7 @@ class Recipe(object):
             self._exclude_list.remove('')
 
     def _tarfile_filter(self, tarinfo):
-        path = tarinfo.path
+        path = tarinfo.path.replace('python', 'dist', 1)
         if path in self._exclude_list:
             return None
         if path in self._include_list:
