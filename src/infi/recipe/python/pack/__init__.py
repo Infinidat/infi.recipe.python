@@ -1,6 +1,7 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
 from infi.os_info import get_platform_string, get_version_from_git
+import os
 
 def _get_version():
     return "%s-%s" % (get_version_from_git(), get_platform_string())
@@ -75,7 +76,7 @@ class Recipe(object):
             self._exclude_list.remove('')
 
     def _tarfile_filter(self, tarinfo):
-        path = tarinfo.path.replace('python', 'dist', 1)
+        path = os.path.normpath(tarinfo.path.replace('python', 'dist', 1))
         if path in self._exclude_list:
             return None
         if path in self._include_list:
