@@ -77,6 +77,8 @@ class Recipe(object):
 
     def _tarfile_filter(self, tarinfo):
         path = os.path.normpath(tarinfo.path.replace('python', 'dist', 1))
+        if path.endswith('exe') or path.endswith('dll') or path.endswith('pyd'):
+            tarinfo.mode = 0o755
         if path in self._exclude_list:
             return None
         if path in self._include_list:
