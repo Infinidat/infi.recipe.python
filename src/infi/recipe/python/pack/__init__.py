@@ -3,35 +3,8 @@ __import__("pkg_resources").declare_namespace(__name__)
 from infi.os_info import get_platform_string, get_version_from_git
 import os
 
-def _get_python_version():
-    python_bin = "./dist/bin/python"
-
-    if os.path.exists(python_bin):
-        try:
-            version_output = subprocess.check_output([python_bin, "--version"], stderr=subprocess.STDOUT)
-            python_version = version_output.decode("utf-8").strip().split()[-1]
-            return python_version
-        except subprocess.CalledProcessError:
-            pass
-
-    config_file = "buildout-build.cfg"
-    if os.path.exists(config_file):
-        try:
-            with open(config_file, "r") as f:
-                for line in f:
-                    if "python-version" in line:
-                        return line.split("=")[-1].strip()
-        except Exception:
-            pass
-    return get_version_from_git()
-
 def _get_version():
-    python_version = _get_python_version()
-    platform_string = get_platform_string()
-    if "post" in python_version:
-        base_version, post_num = python_version.split("post")
-        return f"{base_version}.{post_num}-{platform_string}"
-    return f"{python_version}-{platform_string}"
+    return "%s-%s" % (get_version_from_git(), get_platform_string())
 
 class Recipe(object):
     """ This recipe packs the 'dist' directory to python-<version>-<arch>.tar.gz
