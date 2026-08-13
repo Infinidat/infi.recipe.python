@@ -64,8 +64,16 @@ class Recipe(object):
 
     def _write_archive(self):
         import tarfile
-        archive = tarfile.open(name=self.destination_file, mode='w:gz')
-        archive.add(name=self.source, arcname='python', filter=self._tarfile_filter)
+        with tarfile.open(
+            name=self.destination_file,
+            format=tarfile.USTAR_FORMAT,
+            mode='w:gz'
+        ) as archive:
+            archive.add(
+                name=self.source,
+                arcname='python',
+                filter=self._tarfile_filter
+            )
 
     def _build_include_list(self):
         self._include_list = [path.strip() for path in self._options.get("include_list", '').splitlines()]
